@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var panOutView: UIView!
     @IBOutlet weak var imageCollectionView: UICollectionView!
     @IBOutlet weak var weekDetailsView: UIView!
+    @IBOutlet weak var bezerContainerView: UIView!
+
     @IBOutlet weak var bezeirView: BezierView!
 
     @IBOutlet weak var panOutHtCons: NSLayoutConstraint!
@@ -136,6 +138,8 @@ class ViewController: UIViewController {
 
         self.plantsInfoStack.alpha = 0.0
         self.wateringStack.alpha = 0.0
+        self.weekDetailsView.alpha = 0.0
+        self.bezerContainerView.alpha = 0.0
     }
 
     func configViews() {
@@ -144,6 +148,22 @@ class ViewController: UIViewController {
         self.panOutHtCons.constant = panOutheight
         self.panOutBottomCons.constant = -panOutheight / 2
         self.panOutView.layoutIfNeeded()
+    }
+
+    func configCurve() {
+
+        var points: [CGPoint] = []
+        let equal = self.bezeirView.frame.width / 6
+
+        let point1 = CGPoint(x: 0, y: 175)
+        let point2 = CGPoint(x: equal , y: 50)
+        let point3 = CGPoint(x: equal * 2, y: 100)
+        let point4 = CGPoint(x: equal * 3, y: 50)
+        let point5 = CGPoint(x: equal * 4, y: 100)
+        let point6 = CGPoint(x: equal * 5, y: 125)
+        let point7 = CGPoint(x: equal * 6, y: 180)
+        points.append(contentsOf: [point1, point2, point3, point4, point5, point6, point7])
+        bezeirView.drawLineCurve(points: points)
     }
 }
 
@@ -264,6 +284,32 @@ extension ViewController {
             self.view.layoutIfNeeded()
         }
 
+        transitionAnimator.addAnimations ({ [weak self] in
+            guard let `self` = self else { return }
+            switch state {
+                case .open:
+                    self.weekDetailsView.alpha = 1.0
+                    self.weekDetailsView.transform = CGAffineTransform(translationX: 0, y: -40)
+                case .closed:
+                    self.weekDetailsView.alpha = 0
+                    self.weekDetailsView.transform = .identity
+            }
+            }, delayFactor: state.isOpening ? 0.2 : 0.05)
+
+
+        transitionAnimator.addAnimations ({ [weak self] in
+            guard let `self` = self else { return }
+            switch state {
+                case .open:
+                    self.bezerContainerView.alpha = 1.0
+                    self.bezerContainerView.transform = CGAffineTransform(translationX: 0, y: -40)
+                case .closed:
+                    self.bezerContainerView.alpha = 0
+                    self.bezerContainerView.transform = .identity
+            }
+            }, delayFactor: state.isOpening ? 0.5 : 0.0)
+
+
         transitionAnimator.addCompletion { [weak self] position in
 
             guard let `self` = self else { return }
@@ -279,6 +325,7 @@ extension ViewController {
 
             switch self.outerPanState {
                 case .open:
+                    self.configCurve()
                     self.panOutBottomCons.constant = 0
                 case .closed:
                     self.panOutBottomCons.constant = -self.detailsPanBottomOffset
@@ -362,48 +409,6 @@ extension ViewController {
 
             default: break
         }
-    }
-}
-
-// MARK: CollectionView Delegates
-extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
-
-    fileprivate func configCollectionViews() {
-        configureCollectionCell()
-        setUpFlowLayout()
-    }
-
-    fileprivate func configureCollectionCell() {
-        self.imageCollectionView.register(UINib(nibName: "ImageCell", bundle: nil), forCellWithReuseIdentifier: "ImageCell")
-        imageCollectionView.delegate = self
-        imageCollectionView.dataSource = self
-    }
-
-    fileprivate func setUpFlowLayout() {
-        let flowlayout = UICollectionViewFlowLayout()
-        flowlayout.scrollDirection = .horizontal
-        flowlayout.itemSize = CGSize(width: 75, height: 75)
-        self.imageCollectionView.collectionViewLayout = flowlayout
-    }
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageColors.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return congifureCell(indexPath)
-    }
-
-    fileprivate func congifureCell(_ indexPath: IndexPath) -> UICollectionViewCell {
-
-        guard let cell = imageCollectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as? ImageCollectionCell else { return UICollectionViewCell()}
-        let imgColor = imageColors[indexPath.row]
-        cell.imageView.backgroundColor = imgColor
-        return cell
-    }
-
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
     }
 }
 

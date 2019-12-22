@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B8B7142D23AE9B7B00C00736 /* ImageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B8B7142C23AE9B7B00C00736 /* ImageCell.xib */; };
-		B8B7142F23AE9C4300C00736 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B7142E23AE9C4300C00736 /* CollectionViewCell.swift */; };
+		B8B7142F23AE9C4300C00736 /* VC + CollectionViewl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B7142E23AE9C4300C00736 /* VC + CollectionViewl.swift */; };
 		B8B7143123AEA65200C00736 /* BezierView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B7143023AEA65200C00736 /* BezierView.swift */; };
 		B8F613FA23AE168600FC6BA1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F613F923AE168600FC6BA1 /* AppDelegate.swift */; };
 		B8F613FE23AE168600FC6BA1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F613FD23AE168600FC6BA1 /* ViewController.swift */; };
@@ -31,7 +31,7 @@
 
 /* Begin PBXFileReference section */
 		B8B7142C23AE9B7B00C00736 /* ImageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageCell.xib; sourceTree = "<group>"; };
-		B8B7142E23AE9C4300C00736 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		B8B7142E23AE9C4300C00736 /* VC + CollectionViewl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC + CollectionViewl.swift"; sourceTree = "<group>"; };
 		B8B7143023AEA65200C00736 /* BezierView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BezierView.swift; sourceTree = "<group>"; };
 		B8F613F623AE168600FC6BA1 /* InteractiveAnimation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InteractiveAnimation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8F613F923AE168600FC6BA1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -87,7 +87,7 @@
 			children = (
 				B8F613F923AE168600FC6BA1 /* AppDelegate.swift */,
 				B8F613FD23AE168600FC6BA1 /* ViewController.swift */,
-				B8B7142E23AE9C4300C00736 /* CollectionViewCell.swift */,
+				B8B7142E23AE9C4300C00736 /* VC + CollectionViewl.swift */,
 				B8B7143023AEA65200C00736 /* BezierView.swift */,
 				B8F6141B23AE1E4E00FC6BA1 /* Extension.swift */,
 				B8F613FF23AE168600FC6BA1 /* Main.storyboard */,
@@ -212,7 +212,7 @@
 			files = (
 				B8F6141C23AE1E4E00FC6BA1 /* Extension.swift in Sources */,
 				B8F613FE23AE168600FC6BA1 /* ViewController.swift in Sources */,
-				B8B7142F23AE9C4300C00736 /* CollectionViewCell.swift in Sources */,
+				B8B7142F23AE9C4300C00736 /* VC + CollectionViewl.swift in Sources */,
 				B8F613FA23AE168600FC6BA1 /* AppDelegate.swift in Sources */,
 				B8B7143123AEA65200C00736 /* BezierView.swift in Sources */,
 			);

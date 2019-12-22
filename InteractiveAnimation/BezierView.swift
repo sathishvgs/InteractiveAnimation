@@ -9,36 +9,28 @@
 import Foundation
 import UIKit
 
-protocol BezierViewDataSource: class {
-    func bezierViewDataPoints(bezierView: BezierView) -> [CGPoint]
-}
-
 class BezierView: UIView {
 
     //MARK: Public members
-    weak var dataSource: BezierViewDataSource?
-    var lineColor = UIColor(red: 233.0/255.0, green: 98.0/255.0, blue: 101.0/255.0, alpha: 1.0)
+    var lineColor = UIColor.cyan
 
-    var pointLayers = [CAShapeLayer]()
     var lineLayer = CAShapeLayer()
     var prev: (dx: CGFloat, dy: CGFloat, x: CGFloat, y: CGFloat) = (0,0,0,0)
 
     let div: CGFloat = 7.0
 
     //MARK: Private members
-
-    private var dataPoints: [CGPoint]? {
-        return self.dataSource?.bezierViewDataPoints(bezierView: self)
-    }
+    private var dataPoints: [CGPoint]?
 
     override func layoutSubviews() {
         super.layoutSubviews()
+    }
 
+    func drawLineCurve(points: [CGPoint]) {
         self.layer.sublayers?.forEach({ (layer: CALayer) -> () in
             layer.removeFromSuperlayer()
         })
-        pointLayers.removeAll()
-
+        self.dataPoints = points
         drawSmoothLines()
     }
 
@@ -49,37 +41,42 @@ class BezierView: UIView {
 
         lineLayer = CAShapeLayer()
         lineLayer.path = linePath.cgPath
-        lineLayer.fillColor = UIColor.clear.cgColor
+        lineLayer.fillColor = UIColor(red: 204/255, green: 1, blue: 1, alpha: 0.2).cgColor
         lineLayer.strokeColor = lineColor.cgColor
-        lineLayer.lineWidth = 4.0
+        lineLayer.lineWidth = 2.0
 
         lineLayer.shadowColor = UIColor.black.cgColor
         lineLayer.shadowOffset = CGSize(width: 0, height: 8)
         lineLayer.shadowOpacity = 0.5
         lineLayer.shadowRadius = 6.0
 
+        self.layer.addSublayer(self.lineLayer)
 
-        let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 1) {
-            self.layer.addSublayer(self.lineLayer)
-            self.layoutIfNeeded()
-        }
-        animator.startAnimation()
+        // For Animation purpose
+        let initPaths = constructInitial(points: points)
+        lineLayer.animate(fromValue: initPaths.cgPath, toValue: linePath, keyPath: "path")
     }
 }
 
 extension BezierView {
+
+    func constructInitial(points: [CGPoint]) -> UIBezierPath {
+        var newPoints: [CGPoint] = []
+        for point in points {
+            newPoints.append(CGPoint(x: point.x, y: self.frame.height))
+        }
+        return constructPoints(points: newPoints)
+    }
 
     func constructPoints(points: [CGPoint]) -> UIBezierPath {
 
         let bezier = UIBezierPath()
 
         for (index, point) in points.enumerated() {
-
             let x = point.x
             let y = point.y
-
-            var dx = CGFloat(0)
-            var dy = CGFloat(0)
+            var dx: CGFloat = 0.0
+            var dy: CGFloat = 0.0
 
             switch index {
                 case _ where index == 0:
@@ -105,7 +102,6 @@ extension BezierView {
             }
 
             bezier.addCurve(to: CGPoint(x: x, y: y), controlPoint1: CGPoint(x: prev.x + prev.dx, y: prev.y + prev.dy), controlPoint2: CGPoint(x: x - dx, y: y - dy))
-
             prev = (dx, dy, x, y)
         }
         return bezier
