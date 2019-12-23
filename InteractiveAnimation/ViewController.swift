@@ -127,6 +127,9 @@ class ViewController: UIViewController {
 
     var panViewType: PanViewType = .outer
     var outerPanState: State = .closed
+    var timer: Timer?
+
+    var currentValue: Int = 0
 
     var outerTranistionAnimators: [UIViewPropertyAnimator] = []
     var outerAnimationProgress: [CGFloat] = []
@@ -212,10 +215,6 @@ extension ViewController {
     }
 
     func addDayTransitions() {
-        for index in 1...5 {
-            let indexStr = (index == 1) ? "\(index) day" : "\(index) days"
-            dayCountLbl.text = "\(indexStr)"
-        }
     }
 }
 
@@ -431,19 +430,26 @@ extension ViewController {
                 let state = panType.isOuter ? outerPanState : innerPanState
                 if state == .open { yPoint *= -1}
                 checkForTransitionReverse(panType: panType, yPoint: &yPoint)
+                if panType == .inner && state.isOpening { updateDaysCount(count: getCount(yPoint)) }
 
             case .ended:
 
                 let yVelocity = recognizer.velocity(in: innerPanView).y
                 let shouldClose = yVelocity > 0
                 let transitionAnimator = panType == .inner ? innerTranistionAnimators : outerTranistionAnimators
+                let state = panType.isOuter ? outerPanState : innerPanState
+
+                if panType == .inner && state.isOpening {
+                    self.dayCountLbl.text = "7 days"
+                    self.currentValue = 7
+                    self.iterateDaysCountManually()
+                }
 
                 if yVelocity == 0 {
                     transitionAnimator.forEach { $0.continueAnimation(withTimingParameters: nil, durationFactor: 0) }
                     break
                 }
 
-                let state = panType.isOuter ? outerPanState : innerPanState
                 switch state {
                     case .open:
                         if !shouldClose && !transitionAnimator[0].isReversed { transitionAnimator.forEach { $0.isReversed = !$0.isReversed } }
@@ -475,6 +481,35 @@ extension ViewController {
                     animator.fractionComplete = yPoint + outerAnimationProgress[index]
             }
         }
+    }
+}
+
+// MARK: Days Count Calculation
+extension ViewController {
+
+    func iterateDaysCountManually() {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { (timer) in
+            self.updateDaysCount(count: self.currentValue - 1)
+        }
+    }
+
+    func getCount(_ yPoint: CGFloat) -> Int {
+        let val = yPoint / 0.7
+        let count = Int(round(val * 0.5 * 10))
+        return count
+    }
+
+    func updateDaysCount(count: Int) {
+        print("Count Lbl \(count)")
+        guard count > 0 && count <= 7 else {
+            timer?.invalidate()
+            return
+        }
+        UIView.animateKeyframes(withDuration: 1, delay: 0, options: [.allowUserInteraction], animations: {[weak self] in
+            let indexStr = (count == 1) ? "\(count) day" : "\(count) days"
+            self?.currentValue = count
+            self?.dayCountLbl.text = "\(indexStr)"
+        }, completion: nil)
     }
 }
 
